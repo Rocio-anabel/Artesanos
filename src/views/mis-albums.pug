@@ -1,0 +1,75 @@
+doctype html
+html(lang="es")
+  head
+    meta(charset="UTF-8")
+    meta(name="viewport" content="width=device-width, initial-scale=1")
+    title Mis albumes - Crear álbum y subir imágenes
+    link(rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css")
+
+  body
+    nav.navbar.navbar-light(style="background-color: rgb(238, 67, 67);")
+      .container-fluid
+        a.navbar-brand(href="#")
+          img(src="/public/img/Artesanos-logo.png" alt="Bootstrap" width="160" height="75")
+        form.d-flex(role="search")
+          input.form-control.me-2(type="search" placeholder="Buscar" aria-label="Search")
+          button.btn.btn-outline-light(type="submit") Buscar
+        .btn-toolbar.justify-content-between(role="toolbar")
+          .dropdown
+            svg(xmlns="http://www.w3.org/2000/svg" width="35" height="35" fill="currentColor" class="bi bi-person-circle dropdown-toggle" data-bs-toggle="dropdown" style="color: antiquewhite;" viewBox="0 0 16 16")
+              path(d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0")
+              path(fill-rule="evenodd" d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8m8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1")
+            ul.dropdown-menu
+              li
+                a.dropdown-item(href="#") Perfil
+              li
+                a.dropdown-item(href="#") Mis albums
+              li
+                a.dropdown-item(href="#") Cerrar sesión
+          a(href="#")
+            svg(xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" class="bi bi-bell-fill" style="color: antiquewhite;" viewBox="0 0 16 16")
+              path(d="M8 16a2 2 0 0 0 2-2H6a2 2 0 0 0 2 2m.995-14.901a1 1 0 1 0-1.99 0A5 5 0 0 0 3 6c0 1.098-.5 6-2 7h14c-1.5-1-2-5.902-2-7 0-2.42-1.72-4.44-4.005-4.901")
+
+    .container.my-5
+      h2.mb-4.text-center Mis álbumes
+
+      // Crear nuevo álbum
+      .card.mb-5.shadow-sm
+        .card-header
+          h5 Crear un nuevo álbum
+        .card-body
+          form#crearAlbumForm(method="POST" action="/album/crear")
+            .mb-3
+              label.form-label(for="nombreAlbum") Nombre del álbum
+              input.form-control(type="text" id="nombreAlbum" name="titulo" required)
+            .mb-3
+              label.form-label(for="visibilidadSelect") Visibilidad del álbum
+              select.form-select(id="visibilidadSelect" name="visibilidad")
+                option(value="publico") Público
+                option(value="privado") Privado
+                option(value="amigos") Amigos
+            button.btn.btn-danger(type="submit") Crear álbum
+
+      // Subir imágenes
+      if albumes.length > 0
+        .card.shadow-sm
+          .card-header
+            h5 Subir imágenes a un álbum existente
+          .card-body
+            form#subirImagenForm(method="POST", action="/imagen/subir", enctype="multipart/form-data")
+              .mb-3
+                label.form-label(for="albumSelect") Seleccionar álbum
+                select.form-select(id="albumSelect" name="ID_album" required)
+                  if albumes.length === 1
+                    option(value=albumes[0].ID_album selected)= albumes[0].titulo
+                  else
+                    option(value="" selected disabled) -- Seleccione un álbum --
+                    each album in albumes
+                      option(value=album.ID_album)= album.titulo
+              .mb-3
+                label.form-label(for="imagenesInput") Seleccionar imágenes
+                input.form-control(type="file", id="imagenesInput", name="imagen", accept="image/*", required)
+              button.btn.btn-danger(type="submit") Subir imágenes
+      else
+        .alert.alert-warning.mt-4 No tenés álbumes creados aún. Creá uno para poder subir imágenes.
+    script(src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js")
